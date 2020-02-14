@@ -126,3 +126,5 @@ train/
 ssd_mobilenet_v1_coco_2017_11_17/**
 mscoco_label_map.pbtxt
 
+# testing storage folder
+test_store/

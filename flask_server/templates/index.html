@@ -5,17 +5,21 @@
   <title>DeepLens</title>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script
+    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+  <script src="static/vendor/jquery.fileupload.js"></script>
   <script src="static/app.js?rand={{rand}}"></script>
 </head>
 
 <body>
-  <div id="images">
-    {{images}}
-  </div>
+  <div id="images"></div>
 
   <button id="left">Left</button>
   <button id="right">Right</button>
   <div>Frame: <span id="frame-num">0</span></div>
-</body>
+  <form id="fileupload" method="POST" enctype="multipart/form-data">
+    </body>
 
 </html>

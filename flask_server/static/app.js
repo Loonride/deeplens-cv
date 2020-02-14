@@ -7,9 +7,15 @@ const showFrame = (num) => {
 };
 
 $(document).ready(() => {
-    showFrame(0);
-    const frameCount = $("#images img").length;
+    $("#upload").fileupload();
+    let frameCount = 0;
     let frame = 0;
+    $.get("/frames?name=test", (data) => {
+        const cont = $("#images");
+        $(data).appendTo(cont);
+        frameCount = $("#images img").length;
+        showFrame(0);
+    });
     $("#left").click(() => {
         frame--;
         if (frame < 0) {
