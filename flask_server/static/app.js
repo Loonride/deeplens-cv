@@ -40,6 +40,9 @@ $(document).ready(() => {
         if (frame >= frameCount) {
             frame = frameCount - 1;
         }
+        if (frameCount == 0) {
+            frame = 0;
+        }
         showFrame(frame);
     });
 });
