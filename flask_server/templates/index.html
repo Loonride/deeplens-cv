@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="static/vendor/jquery.fileupload.css" />
   <link rel="stylesheet" href="static/vendor/jquery.fileupload-ui.css" />
 
+  <link rel="stylesheet" href="static/style.css?rand={{rand}}" />
+
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script
@@ -34,8 +36,12 @@
 <body>
   <div id="images"></div>
 
-  <button id="left">Left</button>
-  <button id="right">Right</button>
+  <div id="slider-container">
+    <input type="range" min="0" max="1" value="0" class="slider" id="slider">
+  </div>
+
+  <!-- <button id="left">Left</button>
+  <button id="right">Right</button> -->
   <div>Frame: <span id="frame-num">0</span></div>
   <input id="fileupload" type="file" name="file" data-url="/upload">
 </body>
