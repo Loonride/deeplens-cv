@@ -6,16 +6,28 @@ const showFrame = (num) => {
     $(`#images img:eq(${num})`).show();
 };
 
+let frameCount = 0;
+
+const handleImageData = (data) => {
+    const cont = $("#images");
+    $(data).appendTo(cont);
+    frameCount = $("#images img").length;
+    showFrame(0);
+}
+
 $(document).ready(() => {
-    $("#upload").fileupload();
-    let frameCount = 0;
     let frame = 0;
-    $.get("/frames?name=test", (data) => {
-        const cont = $("#images");
-        $(data).appendTo(cont);
-        frameCount = $("#images img").length;
-        showFrame(0);
+    $("#fileupload").fileupload({
+        done: (e, data) => {
+            handleImageData(data.result);
+        }
     });
+    // $.get("/frames?name=test", (data) => {
+    //     const cont = $("#images");
+    //     $(data).appendTo(cont);
+    //     frameCount = $("#images img").length;
+    //     showFrame(0);
+    // });
     $("#left").click(() => {
         frame--;
         if (frame < 0) {
