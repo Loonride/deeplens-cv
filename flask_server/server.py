@@ -26,19 +26,20 @@ app.config['UPLOADED_VIDEOS_DEST'] = 'videos'
 videos = UploadSet('videos', ['mp4'])
 configure_uploads(app, videos)
 
-class TestFilter(object):
-    def filter(self, header_data):
-        return True
+args = {'encoding': XVID, 'sample': 1.0, 'offset': 0, 'limit': 1000, 'batch_size': 1000}
 
-manager = SimpleStorageManager(TestTagger(), 'test_store')
+manager = SimpleStorageManager('test_store')
 
 def get_frames(name):
     try:
-        res = manager.get(name, TestFilter(), 100)
+        def filter(header_data):
+            return True
+        res = manager.get(name, filter, args)
         vid = res[0]
         html = "";
         for frame in vid:
-            ret, buff = cv2.imencode('.jpg', frame['data'])
+            print(getFrameNumber(frame))
+            ret, buff = cv2.imencode('.jpg', getFrameData(frame))
             b64 = base64.b64encode(buff)
             html += "<img src='data:image/jpg;base64," + b64.decode("utf-8") + "'>"
         return Markup(html)
@@ -58,5 +59,5 @@ def frames():
 @app.route('/upload', methods=['POST'])
 def upload():
     filename = videos.save(request.files['file'])
-    manager.put('videos/' + filename, filename, args={'encoding': XVID, 'size': -1, 'sample': 1.0, 'offset': 0, 'limit': 100})
+    manager.put('videos/' + filename, filename, args)
     return get_frames(filename)
