@@ -37,6 +37,7 @@ def do_filter(conn, video_name):
 
 args = {'encoding': XVID, 'size': -1, 'sample': 1.0, 'offset': 0, 'limit': 1000, 'batch_size': 500}
 
+# change the 3 parameters that get passed into the BGFG segmenter based on user input
 manager = FullStorageManager(CustomTagger(FixedCameraBGFGSegmenter().segment, batch_size=500), CropSplitter(), 'test_store')
 
 def get_frames(name):
@@ -70,12 +71,12 @@ def upload():
     manager.put('videos/' + filename, filename, args)
     return get_frames(filename)
 
-# @app.route("/names")
-# def names():
-#     conn = manager.conn
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT video_name FROM clip")
-#     select_result = cursor.fetchall()
-#     names = set([cl[0] for cl in select_result])
-#     print(names)
-#     return ""
+@app.route("/names")
+def names():
+    conn = manager.conn
+    cursor = conn.cursor()
+    cursor.execute("SELECT video_name FROM clip")
+    select_result = cursor.fetchall()
+    names = set([cl[0] for cl in select_result])
+    print(names)
+    return ""
