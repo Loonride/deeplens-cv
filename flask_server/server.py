@@ -68,7 +68,7 @@ def frames():
 @app.route('/upload', methods=['POST'])
 def upload():
     filename = videos.save(request.files['file'])
-    manager.put('videos/' + filename, filename, args)
+    manager.put('videos/' + filename, filename, args, False, False)
     return get_frames(filename)
 
 @app.route("/names")
