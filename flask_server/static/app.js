@@ -1,4 +1,3 @@
-
 const showFrame = (num) => {
     const imgs = $("#images img");
     imgs.hide();
@@ -8,19 +7,47 @@ const showFrame = (num) => {
 
 let frameCount = 0;
 
-const handleImageData = (data) => {
+const handleImageData = (rawData) => {
+    const data = JSON.parse(rawData);
     const cont = $("#images");
-    $(data).appendTo(cont);
+    cont.empty();
+    $(decodeURIComponent(data.imgs)).appendTo(cont);
+    $('#clip-name').text(data.name);
     frameCount = $("#images img").length;
     $("#slider").attr("max", "" + (frameCount - 1));
     showFrame(0);
 }
 
+const getClips = () => {
+    $.get("/clips", (data) => {
+        let clipNames = data.split(",");
+        clipNames.splice(clipNames.length - 1, 1);
+        const cont = $("#clips");
+        cont.empty();
+        clipNames.forEach(clipName => {
+            const elem = $(`<button data-name=${clipName}>${clipName}</button>`);
+            elem.appendTo(cont);
+        });
+
+
+        $("#clips button").click(function() {
+            const elem = $(this);
+            const clipName = elem.attr('data-name');
+
+            $.get("/frames?name=" + clipName, (data) => {
+                handleImageData(data);
+            });
+        });
+    });
+}
+
 $(document).ready(() => {
+    getClips();
     let frame = 0;
     $("#fileupload").fileupload({
         done: (e, data) => {
             handleImageData(data.result);
+            getClips();
         }
     });
     // $.get("/frames?name=test", (data) => {

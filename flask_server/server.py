@@ -3,6 +3,7 @@ import base64
 import random
 import os
 import sys
+from urllib.parse import quote
 sys.path.append('../')
 
 from deeplens.struct import *
@@ -38,7 +39,7 @@ def do_filter(conn, video_name):
 args = {'encoding': XVID, 'size': -1, 'sample': 1.0, 'offset': 0, 'limit': 1000, 'batch_size': 500}
 
 # change the 3 parameters that get passed into the BGFG segmenter based on user input
-manager = FullStorageManager(CustomTagger(FixedCameraBGFGSegmenter().segment, batch_size=500), CropSplitter(), 'test_store')
+manager = FullStorageManager(CustomTagger(FixedCameraBGFGSegmenter().segment, batch_size=500), CropSplitter(), 'test_store', reuse_conn=False)
 
 def get_frames(name):
     try:
@@ -56,6 +57,20 @@ def get_frames(name):
         return ''
         # abort(404)
 
+def get_clip_names():
+    conn = manager.create_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT video_name FROM clip")
+    select_result = cursor.fetchall()
+    names = set([cl[0] for cl in select_result])
+    manager.remove_conn(conn)
+    return names
+
+def create_frames_json(name):
+    frames = get_frames(name)
+    print(frames)
+    return '{"imgs":"' + quote(frames) + '","name":"' + name + '"}'
+
 @app.route("/")
 def index():
     return render_template('index.html', rand=random.randrange(100000))
@@ -63,20 +78,18 @@ def index():
 @app.route("/frames")
 def frames():
     name = request.args.get('name')
-    return get_frames(name)
+    return create_frames_json(name)
 
 @app.route('/upload', methods=['POST'])
 def upload():
     filename = videos.save(request.files['file'])
     manager.put('videos/' + filename, filename, args, False, False)
-    return get_frames(filename)
+    return create_frames_json(filename)
 
-@app.route("/names")
-def names():
-    conn = manager.conn
-    cursor = conn.cursor()
-    cursor.execute("SELECT video_name FROM clip")
-    select_result = cursor.fetchall()
-    names = set([cl[0] for cl in select_result])
-    print(names)
-    return ""
+@app.route("/clips")
+def clips():
+    names = get_clip_names()
+    res = ""
+    for name in names:
+        res += name + ","
+    return res
