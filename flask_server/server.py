@@ -43,7 +43,6 @@ def do_filter(conn, video_name):
     c = conn.cursor()
     c.execute("SELECT clip_id FROM clip WHERE video_name = '%s'" % (video_name))
     res = c.fetchall()
-    print(res[0])
     return [cl[0] for cl in res]
 
 args = {'frame_rate': 30, 'encoding': XVID, 'limit': 1000, 'sample': 1.0, 'offset': 0, 'batch_size': 500, 'num_processes': 4, 'background_scale': 1}
